@@ -2,13 +2,13 @@ import type { Metadata } from 'next'
 import { Inria_Sans } from 'next/font/google'
 import './globals.css'
 
-const inriaSans = Inria_Sans({ 
+const inriaSans = Inria_Sans({
   weight: ['300', '700'],
   style: ['normal', 'italic'],
   subsets: ['latin'],
   variable: '--font-inriaSans',
   display: 'swap',
- })
+})
 
 export const metadata: Metadata = {
   title: 'Virtus Vox Cultor',
