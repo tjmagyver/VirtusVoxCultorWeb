@@ -1,6 +1,9 @@
+'use client'
 import { ButtonGoBack } from '@/components/ButtonGoBack'
 import { TrackListItem } from '@/components/TrackListItem'
+import { api } from '@/services/api'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 interface TracksProps {
   params: {
@@ -13,9 +16,9 @@ type Track = {
   trackId: string
 }
 
-const tracks: Track[] = [
+const trackss: Track[] = [
   {
-    trackName: 'Track 2',
+    trackName: 'Track 2s',
     trackId: '2',
   },
   {
@@ -72,7 +75,28 @@ const tracks: Track[] = [
   },
 ]
 
+
 export default function Tracks({ params }: TracksProps) {
+  const [tracks, setTracks] = useState([{}])
+  const [audiobook, setAudiobook] = useState<any>({})
+
+  async function getTracksByAudiobookId(audiobookId: string) {
+    const tracksToAudiobook = await api.get(`chapters/audiobooks/${audiobookId}`)
+
+    setTracks(tracksToAudiobook.data)
+  }
+
+  async function getAudiobookByAudiobookId(audiobookId: string) {
+    const audiobook = await api.get(`audiobooks/${audiobookId}`)
+
+    setAudiobook(audiobook.data)
+  }
+
+  useEffect(() => {
+    getAudiobookByAudiobookId(params.id)
+    getTracksByAudiobookId(params.id)
+  }, [])
+
   return (
     <section className="flex h-full w-full flex-col gap-6 pr-6">
       <header className="-mt-[132px] ml-auto flex w-full max-w-[842px] flex-col">
@@ -82,7 +106,7 @@ export default function Tracks({ params }: TracksProps) {
           </span>
           <div className="h-[49px] w-[763px] bg-gray-50 px-[18px] pb-2 pt-2.5">
             <span className="text-center font-inriaSans text-2xl font-light leading-[28px] text-gray-300">
-              Nome não editável, que foi inserido na tela anterior
+              {audiobook.title}
             </span>
           </div>
         </div>
@@ -94,7 +118,7 @@ export default function Tracks({ params }: TracksProps) {
                 Nº de Faixas:
               </p>
               <span className="flex h-[47px] w-[130px] items-center justify-center bg-gray-50 font-inriaSans text-[30px] font-light text-gray-300">
-                1/20
+                1/{audiobook.numberOfChapters}
               </span>
             </div>
             <div className="flex flex-col items-center">
@@ -104,22 +128,32 @@ export default function Tracks({ params }: TracksProps) {
               </span>
             </div>
           </div>
-          <Image
-            src="/iconClose.png"
-            alt="Icon Close"
-            width={80}
-            height={80}
-            quality={100}
-            className="object-contain"
-          />
-          <Image
-            src="/iconDiskette.png"
-            alt="Icon Diskette"
-            width={80}
-            height={80}
-            quality={100}
-            className="ml-[149px] object-contain"
-          />
+          <div className="flex justify-around">
+            <Image
+              src="/iconClose.png"
+              alt="Icon Close"
+              width={80}
+              height={80}
+              quality={100}
+              className="object-contain"
+            />
+            <Image
+              src="/iconUploadLot.png"
+              alt="Icon UploadLot"
+              width={102}
+              height={80}
+              quality={100}
+              className="ml-5 object-contain"
+            />
+            <Image
+              src="/iconDiskette.png"
+              alt="Icon Diskette"
+              width={80}
+              height={80}
+              quality={100}
+              className="ml-[57px] object-contain"
+            />
+          </div>
           <button className="h-[76px] w-[196px] bg-red-500 text-center font-inriaSans text-[40px] font-light text-white">
             ENVIAR
           </button>
@@ -144,17 +178,11 @@ export default function Tracks({ params }: TracksProps) {
           </div>
         </div>
         <div className="bg-white_off flex h-[741px] w-full flex-col gap-6 overflow-y-auto pb-4 pl-8 pt-5">
-          <TrackListItem
-            key={1}
-            trackName="Track 1"
-            trackId="1"
-            trackUploaded
-          />
-          {tracks.map((track) => (
+          {Array.from({ length: audiobook.numberOfChapters }, (_, index) => (
             <TrackListItem
-              key={track.trackId}
-              trackName={track.trackName}
-              trackId={track.trackId}
+              key={`${index}`}
+              trackName={`Chapter ${index + 1}`}
+              trackId={index + 1}
             />
           ))}
         </div>

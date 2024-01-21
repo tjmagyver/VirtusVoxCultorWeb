@@ -1,16 +1,18 @@
 'use client'
 import * as SelectPrimitive from '@radix-ui/react-select'
 import Image from 'next/image'
-import { ReactNode } from 'react'
+import { ChangeEvent, ReactNode, forwardRef } from 'react'
 
 export interface SelectProps extends SelectPrimitive.SelectProps {
   children: ReactNode
   placeholder: string
+  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void
 }
 
-export function Select({ children, placeholder, ...rest }: SelectProps) {
+export const Select = forwardRef<SelectProps, any>(({ children, placeholder, onChange, ...rest }, ref) => {
   return (
-    <SelectPrimitive.Root {...rest}>
+    <SelectPrimitive.Root {...rest}
+      ref={ref} onChange={onChange}>
       <SelectPrimitive.Trigger
         className="flex h-[38px] w-[216px] cursor-default items-center justify-between 
         gap-2 bg-white py-0.5 pl-2.5 pr-[3px] font-inriaSans text-xl font-bold text-black outline-none"
@@ -42,4 +44,4 @@ export function Select({ children, placeholder, ...rest }: SelectProps) {
       </SelectPrimitive.Portal>
     </SelectPrimitive.Root>
   )
-}
+})

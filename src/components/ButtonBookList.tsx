@@ -11,6 +11,7 @@ export function ButtonBookList() {
   }
   return (
     <button
+      type="button"
       onClick={handleNavigateToBookList}
       className="flex h-[45px] w-[57px] items-center justify-center bg-red-500"
     >

@@ -1,4 +1,5 @@
 'use client'
+import { api } from '@/services/api'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -15,7 +16,11 @@ export function AudiobookListItem({
   const [showBookName, setShowBookName] = useState(false)
   const router = useRouter()
 
-  function toogleShowBookName() {
+  async function toogleShowBookName() {
+    const data = {
+      isVisible: !showBookName
+    }
+    await api.patch(`audiobooks/${bookId}`, data)
     setShowBookName(!showBookName)
   }
 

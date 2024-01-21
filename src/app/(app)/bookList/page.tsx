@@ -3,6 +3,7 @@ import { ButtonGoBack } from '@/components/ButtonGoBack'
 import { Label } from '@/components/Label'
 import { Select } from '@/components/Select'
 import { SelectItem } from '@/components/Select/SelectItem'
+import { api } from '@/services/api'
 import Image from 'next/image'
 
 type Audiobook = {
@@ -69,7 +70,17 @@ const audiobooks: Audiobook[] = [
   },
 ]
 
-export default function BookList() {
+async function getAudiobooks() {
+  const audiobooks = await api.get("/audiobooks")
+
+  return audiobooks.data
+}
+
+export default async function BookList() {
+  const audiobooksList: any = await getAudiobooks()
+
+  console.log(audiobooksList)
+
   return (
     <section className="flex h-full w-full flex-col gap-6 pr-6">
       <header className="mt-[36px] flex w-full items-center justify-between">
@@ -137,11 +148,11 @@ export default function BookList() {
             className="h-11 w-11/12 border border-gray-300 pl-4 pr-1 font-inriaSans text-2xl text-gray-300 outline-none placeholder:text-gray-100"
           />
           <div className="flex max-h-[645px] w-11/12 flex-col gap-2 overflow-y-auto">
-            {audiobooks.map((audiobook) => (
+            {audiobooksList.map((audiobook: any) => (
               <AudiobookListItem
-                key={audiobook.bookId}
-                bookName={audiobook.bookName}
-                bookId={audiobook.bookId}
+                key={audiobook.id}
+                bookName={audiobook.title}
+                bookId={audiobook.id}
               />
             ))}
           </div>
