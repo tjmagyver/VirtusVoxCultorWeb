@@ -5,16 +5,12 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 interface TrackListItemProps {
-  trackName: string
   trackId: number
-  trackUploaded?: boolean
   audiobookId?: string
 }
 
 export function TrackListItem({
-  trackName,
   trackId,
-  trackUploaded = false,
   audiobookId
 }: TrackListItemProps) {
   const { register, handleSubmit } = useForm()

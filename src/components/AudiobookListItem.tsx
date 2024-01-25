@@ -13,14 +13,14 @@ interface AudiobookListItemProps {
 export function AudiobookListItem({
   bookName,
   bookId,
-  isVisible = true
+  isVisible = true,
 }: AudiobookListItemProps) {
   const [showBookName, setShowBookName] = useState(isVisible)
   const router = useRouter()
 
   async function toogleShowBookName() {
     const data = {
-      isVisible: !showBookName
+      isVisible: !showBookName,
     }
     await api.patch(`audiobooks/${bookId}`, data)
     setShowBookName(!showBookName)

@@ -1,9 +1,9 @@
-import axios from "axios";
+import axios from 'axios'
 
 export const api = axios.create({
   baseURL: 'https://virtus-vox-cultor-server.vercel.app/',
   headers: {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
-  }
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+  },
 })

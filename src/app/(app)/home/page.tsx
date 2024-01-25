@@ -19,18 +19,26 @@ const createAudiobookBodySchema = z.object({
   sinopse: z.string(),
   title: z.string(),
   numberOfChapters: z.number(),
-  isPrivate: z.boolean()
+  isPrivate: z.boolean(),
 })
 
 type CreateAudiobookBodySchema = z.infer<typeof createAudiobookBodySchema>
 
 export default function Home() {
-  const { register, setValue, setError, handleSubmit, control, reset, formState: { errors } } = useForm<CreateAudiobookBodySchema>();
+  const {
+    register,
+    setValue,
+    setError,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<CreateAudiobookBodySchema>()
   const [fileImage, setFileImage] = useState()
-  const [imagePreview, setImagePreview] = useState<any>(null);
+  const [imagePreview, setImagePreview] = useState<any>(null)
   const router = useRouter()
   async function handleCreateAudiobook(data: CreateAudiobookBodySchema) {
-    const urlUploaded = await handleFileUpload() 
+    const urlUploaded = await handleFileUpload()
     console.log(urlUploaded)
     const newData: CreateAudiobookBodySchema = {
       cover: urlUploaded,
@@ -40,17 +48,17 @@ export default function Home() {
       sinopse: data.sinopse,
       title: data.title,
       numberOfChapters: Number(data.numberOfChapters),
-      isPrivate: data.isPrivate
+      isPrivate: data.isPrivate,
     }
     console.log('ndt', newData)
     try {
       const response = await api.post('audiobooks', newData)
       console.log(response)
-      toast.success("Audiobook adicionado com sucesso!")
+      toast.success('Audiobook adicionado com sucesso!')
       router.push(`/tracks/${response.data.id}`)
     } catch (error) {
       console.log(error)
-      toast.error("Erro ao adicionar audiobook!")
+      toast.error('Erro ao adicionar audiobook!')
     }
   }
 
@@ -67,43 +75,46 @@ export default function Home() {
 
     //   reader.readAsDataURL(fileInput.files[0]);
     // }
-    setImagePreview(null);
-  };
+    setImagePreview(null)
+  }
 
   async function handleFileUpload() {
-    const formData = new FormData();
-    formData.append('file', fileImage!);
+    const formData = new FormData()
+    formData.append('file', fileImage!)
 
     console.log(formData)
     try {
       const response = await api.post('chapters/upload', formData)
-      return response.data.url;
+      return response.data.url
     } catch (error) {
-      console.error('Error uploading file', error);
+      console.error('Error uploading file', error)
     }
   }
 
   const handleImageUpload = (event: any) => {
-    const fileInput = event.target;
+    const fileInput = event.target
 
     console.log(fileInput?.files[0])
 
     if (fileInput.files && fileInput.files[0]) {
-      const reader = new FileReader();
+      const reader = new FileReader()
 
       reader.onload = function (e) {
         console.log(e)
         console.log(e?.target?.result)
-        setImagePreview(e?.target?.result);
+        setImagePreview(e?.target?.result)
         setFileImage(fileInput?.files[0])
-      };
+      }
 
-      reader.readAsDataURL(fileInput.files[0]);
+      reader.readAsDataURL(fileInput.files[0])
     }
-  };
+  }
 
   return (
-    <form className="flex w-full gap-6" onSubmit={handleSubmit(handleCreateAudiobook)}>
+    <form
+      className="flex w-full gap-6"
+      onSubmit={handleSubmit(handleCreateAudiobook)}
+    >
       <aside className="mt-[36px] flex w-full max-w-[314px] flex-col">
         <div className="flex items-center justify-between">
           <Label textLabel="Versão:" htmlFor="publisher" />
@@ -129,12 +140,23 @@ export default function Home() {
                   height={181}
                   className="object-contain"
                 />
-                <input type="file" className="hidden" accept="/image*" id="cover" {...register('cover')} onChange={handleImageUpload} />
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="/image*"
+                  id="cover"
+                  {...register('cover')}
+                  onChange={handleImageUpload}
+                />
               </>
             )}
             {imagePreview && (
               <div>
-                <img src={imagePreview} alt="Image Preview" className="w-full h-full" />
+                <img
+                  src={imagePreview}
+                  alt="Image Preview"
+                  className="h-full w-full"
+                />
                 <button onClick={handleImageRemove}>trocar</button>
               </div>
             )}
@@ -143,25 +165,38 @@ export default function Home() {
         <div className="mb-[22px] mt-8 flex gap-6">
           <div className="flex flex-col gap-2">
             <Label textLabel="Nº de Faixas:" htmlFor="numberTracks" />
-            <input className="h-[47px] w-[130px] bg-white px-[14px] font-inriaSans text-2xl italic text-black outline-1 outline-gray-300" {...register('numberOfChapters')} />
+            <input
+              className="h-[47px] w-[130px] bg-white px-[14px] font-inriaSans text-2xl italic text-black outline-1 outline-gray-300"
+              {...register('numberOfChapters')}
+            />
           </div>
           <div className="flex flex-col gap-[10px]">
             <Label textLabel="Catalográfica:" htmlFor="cataloging" />
-            <button type="button" className="h-[45px] w-[159px] bg-red-500 text-center font-inriaSans text-2xl font-light text-white">
+            <button
+              type="button"
+              className="h-[45px] w-[159px] bg-red-500 text-center font-inriaSans text-2xl font-light text-white"
+            >
               FICHA
             </button>
           </div>
         </div>
-        <button type="submit" className="h-[45px] w-full bg-red-500 text-center font-inriaSans text-2xl font-light text-white">
+        <button
+          type="submit"
+          className="h-[45px] w-full bg-red-500 text-center font-inriaSans text-2xl font-light text-white"
+        >
           ENVIAR FAIXAS
         </button>
       </aside>
       <section className="-mt-6 ml-auto flex w-full max-w-[964px] flex-col items-end gap-3">
         <div className="flex items-center justify-between gap-[66px]">
           <div className="flex items-end gap-2">
-            <div className='flex items-center justify-between mr-[245px]'>
+            <div className="mr-[245px] flex items-center justify-between">
               <Label textLabel="Público" />
-              <input type="checkbox" {...register('isPrivate')} className='w-6 h-6 ml-4' />
+              <input
+                type="checkbox"
+                {...register('isPrivate')}
+                className="ml-4 h-6 w-6"
+              />
             </div>
             <div className="flex items-center justify-between gap-1">
               <Label textLabel="Lista total do acervo" />
@@ -173,7 +208,10 @@ export default function Home() {
           </div>
           <div className="flex items-end gap-2">
             <Label textLabel="Nova Versão:" />
-            <button type="button" className="flex h-[45px] w-[57px] items-center justify-center bg-red-500">
+            <button
+              type="button"
+              className="flex h-[45px] w-[57px] items-center justify-center bg-red-500"
+            >
               <Image
                 src="/iconAdd.png"
                 alt="Icon Add"

@@ -71,7 +71,7 @@ const audiobooks: Audiobook[] = [
 ]
 
 async function getAudiobooks() {
-  const audiobooks = await api.get("/audiobooks")
+  const audiobooks = await api.get('/audiobooks')
 
   return audiobooks.data
 }
