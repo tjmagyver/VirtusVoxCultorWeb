@@ -126,7 +126,7 @@ export default async function BookList() {
             <div className="-mt-10 flex flex-col items-end gap-10">
               <ButtonGoBack />
               <span className="flex h-[47px] w-[130px] items-center justify-center bg-gray-50 font-inriaSans text-[30px] font-light text-gray-300">
-                127
+                {audiobooksList?.length}
               </span>
             </div>
           </div>
@@ -153,6 +153,7 @@ export default async function BookList() {
                 key={audiobook.id}
                 bookName={audiobook.title}
                 bookId={audiobook.id}
+                isVisible={audiobook.isVisible}
               />
             ))}
           </div>

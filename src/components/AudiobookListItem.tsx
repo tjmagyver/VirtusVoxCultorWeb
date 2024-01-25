@@ -7,13 +7,15 @@ import { useState } from 'react'
 interface AudiobookListItemProps {
   bookName: string
   bookId: string
+  isVisible?: boolean
 }
 
 export function AudiobookListItem({
   bookName,
   bookId,
+  isVisible = true
 }: AudiobookListItemProps) {
-  const [showBookName, setShowBookName] = useState(false)
+  const [showBookName, setShowBookName] = useState(isVisible)
   const router = useRouter()
 
   async function toogleShowBookName() {

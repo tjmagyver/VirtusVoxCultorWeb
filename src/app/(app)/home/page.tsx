@@ -3,13 +3,16 @@ import { ButtonBookList } from '@/components/ButtonBookList'
 import { Label } from '@/components/Label'
 import { Select } from '@/components/Select'
 import { SelectItem } from '@/components/Select/SelectItem'
+import { api } from '@/services/api'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import { z } from 'zod'
 
 const createAudiobookBodySchema = z.object({
-  cover: z.string().url(),
+  cover: z.string(),
   duration: z.number(),
   publisher: z.string(),
   linkPurchase: z.string().url(),
@@ -23,41 +26,76 @@ type CreateAudiobookBodySchema = z.infer<typeof createAudiobookBodySchema>
 
 export default function Home() {
   const { register, setValue, setError, handleSubmit, control, reset, formState: { errors } } = useForm<CreateAudiobookBodySchema>();
-
+  const [fileImage, setFileImage] = useState()
   const [imagePreview, setImagePreview] = useState<any>(null);
-
+  const router = useRouter()
   async function handleCreateAudiobook(data: CreateAudiobookBodySchema) {
-    console.log('dt', data)
-    console.log('dt', imagePreview)
-    // const newData: CreateAudiobookBodySchema = {
-    //   cover: data.linkPurchase,
-    //   duration: 3600,
-    //   linkPurchase: data.linkPurchase,
-    //   publisher: 'Dialética',
-    //   sinopse: data.sinopse,
-    //   title: data.title,
-    //   numberOfChapters: Number(data.numberOfChapters),
-    //   isPrivate: data.isPrivate
-    // }
-    // console.log('ndt', newData)
-    // try {
-    //   await api.post('audiobooks', newData)
-    //   toast.success("Audiobook adicionado com sucesso!")
-    // } catch (error) {
-    //   console.log(error)
-    //   toast.error("Erro ao adicionar audiobook!")
-    // }
+    const urlUploaded = await handleFileUpload() 
+    console.log(urlUploaded)
+    const newData: CreateAudiobookBodySchema = {
+      cover: urlUploaded,
+      duration: 3600,
+      linkPurchase: data.linkPurchase,
+      publisher: 'Dialética',
+      sinopse: data.sinopse,
+      title: data.title,
+      numberOfChapters: Number(data.numberOfChapters),
+      isPrivate: data.isPrivate
+    }
+    console.log('ndt', newData)
+    try {
+      const response = await api.post('audiobooks', newData)
+      console.log(response)
+      toast.success("Audiobook adicionado com sucesso!")
+      router.push(`/tracks/${response.data.id}`)
+    } catch (error) {
+      console.log(error)
+      toast.error("Erro ao adicionar audiobook!")
+    }
   }
 
+  const handleImageRemove = () => {
+    // const fileInput = event.target;
+
+    // if (fileInput.files && fileInput.files[0]) {
+    //   const reader = new FileReader();
+
+    //   reader.onload = function (e) {
+    //     console.log(e?.target?.result)
+    //     setImagePreview(e?.target?.result);
+    //   };
+
+    //   reader.readAsDataURL(fileInput.files[0]);
+    // }
+    setImagePreview(null);
+  };
+
+  async function handleFileUpload() {
+    const formData = new FormData();
+    formData.append('file', fileImage!);
+
+    console.log(formData)
+    try {
+      const response = await api.post('chapters/upload', formData)
+      return response.data.url;
+    } catch (error) {
+      console.error('Error uploading file', error);
+    }
+  }
 
   const handleImageUpload = (event: any) => {
     const fileInput = event.target;
+
+    console.log(fileInput?.files[0])
 
     if (fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
 
       reader.onload = function (e) {
+        console.log(e)
+        console.log(e?.target?.result)
         setImagePreview(e?.target?.result);
+        setFileImage(fileInput?.files[0])
       };
 
       reader.readAsDataURL(fileInput.files[0]);
@@ -97,6 +135,7 @@ export default function Home() {
             {imagePreview && (
               <div>
                 <img src={imagePreview} alt="Image Preview" className="w-full h-full" />
+                <button onClick={handleImageRemove}>trocar</button>
               </div>
             )}
           </label>

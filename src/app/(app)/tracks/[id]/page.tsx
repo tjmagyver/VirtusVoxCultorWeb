@@ -183,6 +183,7 @@ export default function Tracks({ params }: TracksProps) {
               key={`${index}`}
               trackName={`Chapter ${index + 1}`}
               trackId={index + 1}
+              audiobookId={params.id}
             />
           ))}
         </div>
