@@ -182,7 +182,6 @@ export default function Tracks({ params }: TracksProps) {
           {Array.from({ length: audiobook.numberOfChapters }, (_, index) => (
             <TrackListItem
               key={`${index}`}
-              trackName={`Chapter ${index + 1}`}
               trackId={index + 1}
               audiobookId={params.id}
             />
