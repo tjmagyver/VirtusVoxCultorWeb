@@ -7,14 +7,20 @@ import { useForm } from 'react-hook-form'
 interface TrackListItemProps {
   trackId: number
   audiobookId?: string
+  trackName?: string
+  trackUrl?: string
 }
 
 export function TrackListItem({
   trackId,
+  trackName,
+  trackUrl,
   audiobookId
 }: TrackListItemProps) {
   const { register, handleSubmit } = useForm()
-  const [uploadedUrl, setUploadedUrl] = useState(false)
+  const [uploadedUrl, setUploadedUrl] = useState(!!trackUrl)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const audio = new Audio('https://virtus-bucket.s3.us-east-2.amazonaws.com/AWS_BUCKET_NAME/28c66937-c471-499b-8145-ce24e85405de-PREF%C3%83%C2%81CIO.wav')
 
   async function handleFileUpload(file: any) {
     const formData = new FormData();
@@ -47,15 +53,30 @@ export function TrackListItem({
     }
   }
 
+  function handlePlay() {
+    audio.loop = true
+    if (!isPlaying) {
+      audio.play()
+      setIsPlaying(true)
+    } else {
+      audio.pause()
+      setIsPlaying(false)
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit(handleCreateChapter)} className="flex w-[95%] items-center gap-2.5">
       <span className="h-[45px] w-[52px] bg-gray-300 flex items-center justify-center font-inriaSans text-[40px] font-bold text-white">
         {trackId}
       </span>
-      {/* <span className="flex h-[45px] -ml-2.5 w-11/12 items-center bg-white font-inriaSans text-2xl font-light text-gray-100 px-[23px]">
-        {trackName}
-      </span> */}
-      <input type="text" {...register('title')} className="flex h-[45px] -ml-2.5 w-11/12 items-center bg-white font-inriaSans text-2xl font-light text-gray-900 px-[23px]" />
+      {trackName ? (
+        <span className="flex h-[45px] -ml-2.5 w-11/12 items-center bg-white font-inriaSans text-2xl font-light text-gray-100 px-[23px]">
+          {trackName}
+        </span>
+      ) : (
+        <input type="text" {...register('title')} className="flex h-[45px] -ml-2.5 w-11/12 items-center bg-white font-inriaSans text-2xl font-light text-gray-900 px-[23px]" />
+      )}
+
       <button className="h-[45px] mx-3 w-[79px] bg-red-500 text-center font-inriaSans text-[18px] font-bold text-white">
         {'///'}
       </button>
@@ -71,17 +92,22 @@ export function TrackListItem({
           <input type="file" {...register('file')} hidden />
         </label>) : (
         <button
+          onClick={handlePlay}
           className={`h-[45px] w-[94px] rounded-[10px] ml-4 bg-green-500 flex items-center justify-center font-inriaSans text-2xl font-bold text-white`}
         >
-          <svg
-            width="18"
-            height="23"
-            viewBox="0 0 18 23"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M18 11.5L0.75 22.3253V0.674683L18 11.5Z" fill="white" />
-          </svg>
+          {
+            isPlaying ? '||' :
+              <svg
+                width="18"
+                height="23"
+                viewBox="0 0 18 23"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M18 11.5L0.75 22.3253V0.674683L18 11.5Z" fill="white" />
+              </svg>
+          }
+
         </button>
       )}
 

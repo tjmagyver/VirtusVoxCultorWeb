@@ -76,7 +76,7 @@ const trackss: Track[] = [
 ]
 
 export default function Tracks({ params }: TracksProps) {
-  const [tracks, setTracks] = useState([{}])
+  const [tracks, setTracks] = useState<any[]>([])
   const [audiobook, setAudiobook] = useState<any>({})
 
   async function getTracksByAudiobookId(audiobookId: string) {
@@ -180,11 +180,19 @@ export default function Tracks({ params }: TracksProps) {
         </div>
         <div className="flex h-[741px] w-full flex-col gap-6 overflow-y-auto bg-white_off pb-4 pl-8 pt-5">
           {Array.from({ length: audiobook.numberOfChapters }, (_, index) => (
-            <TrackListItem
-              key={`${index}`}
-              trackId={index + 1}
-              audiobookId={params.id}
-            />
+            tracks[index] ?
+              <TrackListItem
+                key={`${tracks[index].id}`}
+                trackId={index + 1}
+                trackName={`${tracks[index].title}`}
+                trackUrl={`${tracks[index].audiobookId}`}
+                audiobookId={`${tracks[index].audiobookId}`}
+              /> :
+              <TrackListItem
+                key={`${index}`}
+                trackId={index + 1}
+                audiobookId={params.id}
+              />
           ))}
         </div>
       </section>
